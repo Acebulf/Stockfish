@@ -229,6 +229,7 @@ namespace {
   const Score ThreatByAttackOnQueen = S( 38, 22);
   const Score HinderPassedPawn      = S(  7,  0);
   const Score TrappedBishopA1H1     = S( 50, 50);
+  const Score BoxedInBishop         = S(-105,-200);
 
   #undef S
   #undef V
@@ -363,7 +364,13 @@ namespace {
                 // Bonus for bishop on a long diagonal which can "see" both center squares
                 if (more_than_one(Center & (attacks_bb<BISHOP>(s, pos.pieces(PAWN)) | s)))
                     score += LongRangedBishop;
+
+                if (popcount(mobilityArea[Us] & attacks_bb<BISHOP>(s, ~mobilityArea[Us] ))<3){
+                    score += BoxedInBishop;
+                }
+
             }
+
 
             // An important Chess960 pattern: A cornered bishop blocked by a friendly
             // pawn diagonally in front of it is a very serious problem, especially
